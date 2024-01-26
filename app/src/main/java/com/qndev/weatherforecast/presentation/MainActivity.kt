@@ -17,7 +17,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.qndev.weatherforecast.R
 import com.qndev.weatherforecast.data.model.city.City
-import com.qndev.weatherforecast.data.model.city.CityItem
+import com.qndev.weatherforecast.data.model.city.CityList
 import com.qndev.weatherforecast.databinding.ActivityMainBinding
 import com.qndev.weatherforecast.domain.DateFormat
 import com.qndev.weatherforecast.domain.getAssetJsonData
@@ -28,14 +28,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-const val LAT = 10.762622
-const val LONG = 106.66017
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var activityMainBinding: ActivityMainBinding
-    private lateinit var selectedCity: CityItem
+    private lateinit var selectedCity: City
     private lateinit var nextDayAdapter: NextDayAdapter
     private val viewModel: MainViewModel by viewModels()
 
@@ -43,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
+
         setUpSpinner()
         initRecyclerView()
         observeWeatherState()
@@ -52,16 +51,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpSpinner() {
         val cityJson = getAssetJsonData(this)
-        val cityType = object : TypeToken<City>() {}.type
-        val city: City = Gson().fromJson(cityJson, cityType)
+        val cityListType = object : TypeToken<CityList>() {}.type
+        val cityList: CityList = Gson().fromJson(cityJson, cityListType)
 
-        val adapter = ArrayAdapter(this, R.layout.spinner_city, city)
+        val adapter = ArrayAdapter(this, R.layout.spinner_city, cityList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         activityMainBinding.spnCity.adapter = adapter
         activityMainBinding.spnCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedCity = adapterView?.getItemAtPosition(position) as CityItem
+                selectedCity = adapterView?.getItemAtPosition(position) as City
                 val lat = selectedCity.lat.toDouble()
                 val lng = selectedCity.lng.toDouble()
                 viewModel.getCurrentWeather(lat, lng)
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleSwipeToRefresh() {
         activityMainBinding.parent.setOnRefreshListener {
             activityMainBinding.parent.isRefreshing = false
-            viewModel.getCurrentWeather(LAT, LONG)
+            viewModel.getCurrentWeather(selectedCity.lat.toDouble(), selectedCity.lng.toDouble())
         }
     }
 
@@ -118,7 +117,12 @@ class MainActivity : AppCompatActivity() {
             setTitle("Error")
             setMessage("Can't get real time weather data!")
             setPositiveButton("Dismiss") { dialog, _ -> dialog.dismiss() }
-            setNegativeButton("Retry") { _, _ -> viewModel.getCurrentWeather(LAT, LONG) }
+            setNegativeButton("Retry") { _, _ ->
+                viewModel.getCurrentWeather(
+                    selectedCity.lat.toDouble(),
+                    selectedCity.lng.toDouble()
+                )
+            }
             setCancelable(false)
             show()
         }
