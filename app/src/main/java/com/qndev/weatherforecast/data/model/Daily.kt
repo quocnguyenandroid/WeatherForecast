@@ -1,4 +1,4 @@
-package com.qndev.weatherforecast.domain.model
+package com.qndev.weatherforecast.data.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -11,13 +11,4 @@ data class Daily(
     val humidity: Int,
     @SerializedName("wind_speed")
     val windSpeed: Float
-)
-
-data class Temp(
-    @SerializedName("day")
-    val dayTemp: Float,
-    @SerializedName("min")
-    val minTemp: Float,
-    @SerializedName("max")
-    val maxTemp: Float
 )

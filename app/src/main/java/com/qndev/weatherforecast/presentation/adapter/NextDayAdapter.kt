@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.qndev.weatherforecast.R
+import com.qndev.weatherforecast.data.model.Daily
 import com.qndev.weatherforecast.databinding.ViewholderNextDayBinding
 import com.qndev.weatherforecast.domain.DateFormat
-import com.qndev.weatherforecast.domain.model.Daily
 import com.qndev.weatherforecast.domain.toLocalTime
 
 class NextDayAdapter : RecyclerView.Adapter<NextDayAdapter.NextDayViewHolder>() {

@@ -1,4 +1,4 @@
-package com.qndev.weatherforecast.domain.model
+package com.qndev.weatherforecast.data.model
 
 import com.google.gson.annotations.SerializedName
 

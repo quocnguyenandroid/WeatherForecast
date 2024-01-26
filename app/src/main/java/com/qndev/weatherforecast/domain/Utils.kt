@@ -1,9 +1,12 @@
 package com.qndev.weatherforecast.domain
 
+import android.content.Context
+import java.io.IOException
+import java.io.InputStream
+import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
-import kotlin.math.roundToInt
 
 
 enum class DateFormat {
@@ -18,10 +21,22 @@ fun Long.toLocalTime(type: DateFormat): String {
         DateFormat.DATE_TIME -> SimpleDateFormat("dd-MM-yyyy HH:mm")
         DateFormat.DATE -> SimpleDateFormat("dd-MM")
         DateFormat.TIME -> SimpleDateFormat("HH:mm")
-        else -> SimpleDateFormat("dd-MM-yyyy HH:mm")
     }
     dateFormat.timeZone = TimeZone.getTimeZone("GMT+7")
     return dateFormat.format(date)
 }
 
-fun Float.toDegree() = this.roundToInt().toString() + "\u00B0"
+fun getAssetJsonData(context: Context): String? {
+    val json: String = try {
+        val inputStream: InputStream = context.assets.open("vn.json")
+        val size: Int = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+        String(buffer, Charset.forName("UTF-8"))
+    } catch (ex: IOException) {
+        ex.printStackTrace()
+        return null
+    }
+    return json
+}
