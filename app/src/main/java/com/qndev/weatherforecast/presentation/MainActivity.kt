@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                             State.SUCCESS -> updateUi(it)
                             State.FAIL -> showError()
                             State.LOADING -> activityMainBinding.parent.isRefreshing = true
-                            else -> {} //Do nothing
+                            else -> {}
                         }
                     }
             }
