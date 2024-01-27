@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.qndev.weatherforecast.data.model.city.City
+import com.qndev.weatherforecast.data.model.City
 import com.qndev.weatherforecast.domain.sharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

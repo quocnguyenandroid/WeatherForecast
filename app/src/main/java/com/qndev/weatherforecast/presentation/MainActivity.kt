@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -16,13 +17,13 @@ import coil.load
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.qndev.weatherforecast.R
-import com.qndev.weatherforecast.data.model.city.City
-import com.qndev.weatherforecast.data.model.city.CityList
+import com.qndev.weatherforecast.data.model.City
 import com.qndev.weatherforecast.databinding.ActivityMainBinding
 import com.qndev.weatherforecast.domain.DateFormat
 import com.qndev.weatherforecast.domain.getAssetJsonData
 import com.qndev.weatherforecast.domain.toLocalTime
 import com.qndev.weatherforecast.presentation.adapter.NextDayAdapter
+import com.qndev.weatherforecast.presentation.dialog.BookmarkDialog
 import com.qndev.weatherforecast.presentation.sharepref.CityManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var activityMainBinding: ActivityMainBinding
     private lateinit var selectedCity: City
+    private lateinit var cityList: List<City>
     private lateinit var nextDayAdapter: NextDayAdapter
     private val viewModel: MainViewModel by viewModels()
 
@@ -56,8 +58,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpSpinner() {
         val cityJson = getAssetJsonData(this)
-        val cityListType = object : TypeToken<CityList>() {}.type
-        val cityList: CityList = Gson().fromJson(cityJson, cityListType)
+        val cityListType = object : TypeToken<List<City>>() {}.type
+        cityList = Gson().fromJson(cityJson, cityListType)
 
         val adapter = ArrayAdapter(this, R.layout.spinner_city, cityList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -65,12 +67,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleEventListener() {
+        // Swipe to refresh
         activityMainBinding.parent.setOnRefreshListener {
             viewModel.getCurrentWeather(selectedCity.lat.toDouble(), selectedCity.lng.toDouble())
         }
+        // Save city
         activityMainBinding.saveCb.setOnClickListener {
             cityManager.toggleFavorite(selectedCity)
         }
+        // Select city
         activityMainBinding.spnCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -84,6 +89,22 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+        // Open bookmark
+        activityMainBinding.bookmark.setOnClickListener {
+            val savedCity = cityManager.getFavorites()
+            if (savedCity.isEmpty()) {
+                Toast.makeText(this, "No favorites city saved", Toast.LENGTH_SHORT).show()
+            } else {
+                val dialogFragment = BookmarkDialog(savedCity) { city ->
+                    viewModel.getCurrentWeather(city.lat.toDouble(), city.lng.toDouble())
+
+                    //Set selected spinner item after click on bookmark
+                    val selectedCityPosition = cityList.indexOf(city)
+                    activityMainBinding.spnCity.setSelection(selectedCityPosition)
+                }
+                dialogFragment.show(supportFragmentManager, "BookmarkDialog")
+            }
         }
     }
 

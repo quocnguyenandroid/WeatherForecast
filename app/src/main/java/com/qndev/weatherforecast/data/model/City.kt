@@ -1,4 +1,4 @@
-package com.qndev.weatherforecast.data.model.city
+package com.qndev.weatherforecast.data.model
 
 
 import com.google.gson.annotations.SerializedName
