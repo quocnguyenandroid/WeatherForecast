@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.bookmark.setOnClickListener {
             val savedCity = cityManager.getFavorites()
             if (savedCity.isEmpty()) {
-                Toast.makeText(this, "No favorites city saved", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "No favorite city saved", Toast.LENGTH_SHORT).show()
             } else {
                 val dialogFragment = BookmarkDialog(savedCity) { city ->
                     viewModel.getCurrentWeather(city.lat.toDouble(), city.lng.toDouble())
