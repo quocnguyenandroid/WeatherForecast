@@ -29,7 +29,7 @@ class WeatherTest {
     }
 
     @Test
-    fun testGetWeather() {
+    fun testGetWeatherSuccess() {
         val apiKey = "019196fb4af032a27b4be150ce1fef32"
         val unit = "metric"
         val lat = 10.762622
@@ -37,6 +37,17 @@ class WeatherTest {
         val response = weatherApi.getWeatherInfo(lat, long, unit, apiKey).execute()
         assert(response.isSuccessful)
         assert(response.body() != null)
+    }
+
+    @Test
+    fun testGetWeatherFailure() {
+        val apiKey = ""
+        val unit = "metric"
+        val lat = 10.762622
+        val long = 106.66017
+        val response = weatherApi.getWeatherInfo(lat, long, unit, apiKey).execute()
+        assert(!response.isSuccessful)
+        assert(response.body() == null)
     }
 
 
