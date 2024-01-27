@@ -2,5 +2,9 @@
     <string name="app_name">WeatherForecast</string>
     <string name="temp">%d\u00B0</string>
     <string name="humidity">Humidity %d%%</string>
-    <string name="wind_speed">%d km/h</string>
+    <string name="wind_speed">$%.2f km/h</string>
+    <string name="errorText">Error, swipe to refresh</string>
+    <string name="wind_speed_text">Wind speed</string>
+    <string name="humidity_text">Humidity</string>
+    <string name="next_3_days">Next 3 days</string>
 </resources>

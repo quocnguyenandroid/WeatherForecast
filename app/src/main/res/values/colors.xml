@@ -11,4 +11,5 @@
     <color name="gray_text">#CCCACA</color>
     <color name="dark_blue_text">#331866</color>
     <color name="light_background">#9DD4ED</color>
+    <color name="yellow">#FAF735</color>
 </resources>

@@ -33,7 +33,7 @@ class NextDayAdapter : RecyclerView.Adapter<NextDayAdapter.NextDayViewHolder>() 
             binding.humidityTv.text = forecast.humidity.toString() + "%"
             binding.windSpeedTv.text = forecast.windSpeed.toString() + "km/h"
             val iconId = forecast.description[0].icon
-            val imageUrl = "http://openweathermap.org/img/wn/${iconId}@4x.png"
+            val imageUrl = "https://openweathermap.org/img/wn/${iconId}@4x.png"
             binding.descriptionImg.load(imageUrl) {
                 placeholder(R.drawable.cloudy_sunny)
                 error(R.drawable.cloudy_sunny)

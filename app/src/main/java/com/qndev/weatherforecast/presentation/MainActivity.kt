@@ -72,7 +72,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleSwipeToRefresh() {
         activityMainBinding.parent.setOnRefreshListener {
-            activityMainBinding.parent.isRefreshing = false
             viewModel.getCurrentWeather(selectedCity.lat.toDouble(), selectedCity.lng.toDouble())
         }
     }
@@ -86,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                         when (it.state) {
                             State.SUCCESS -> updateUi(it)
                             State.FAIL -> showError()
+                            State.LOADING -> activityMainBinding.parent.isRefreshing = true
                             else -> {} //Do nothing
                         }
                     }
@@ -96,23 +96,25 @@ class MainActivity : AppCompatActivity() {
     private fun updateUi(weatherState: WeatherState) {
         val currentWeatherData = weatherState.weatherData?.current!!
         activityMainBinding.errorText.isVisible = false
+        activityMainBinding.parent.isRefreshing = false
         activityMainBinding.dateTimeTv.text = currentWeatherData.time.toLocalTime(DateFormat.DATE_TIME)
         activityMainBinding.humidityTv.text = getString(R.string.humidity, currentWeatherData.humidity)
         activityMainBinding.tempTv.text = getString(R.string.temp, currentWeatherData.temp.roundToInt())
-        activityMainBinding.windSpeedTv.text = getString(R.string.wind_speed, currentWeatherData.windSpeed.roundToInt())
+        activityMainBinding.windSpeedTv.text = getString(R.string.wind_speed, currentWeatherData.windSpeed)
         activityMainBinding.descriptionTv.text = currentWeatherData.description[0].description
         val iconId = currentWeatherData.description[0].icon
         val imageUrl = "https://openweathermap.org/img/wn/${iconId}@4x.png"
         activityMainBinding.weatherImg.load(imageUrl) {
             error(R.drawable.cloudy)
         }
-        //Update next day data
+        // Update next day data
         val nextDayWeatherData = weatherState.weatherData.daily
         nextDayAdapter.updateForecastList(nextDayWeatherData.subList(1, 4)) // Get next 3 days data
     }
 
     private fun showError() {
         activityMainBinding.errorText.isVisible = true
+        activityMainBinding.parent.isRefreshing = false
         AlertDialog.Builder(this).apply {
             setTitle("Error")
             setMessage("Can't get real time weather data!")

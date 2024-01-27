@@ -22,7 +22,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -55,6 +58,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     //Coil
     implementation("io.coil-kt:coil:2.5.0")
+    implementation("com.toptoche.searchablespinner:searchablespinnerlibrary:1.3.1")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48")

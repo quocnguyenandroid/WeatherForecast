@@ -21,7 +21,8 @@ data class City(
     @SerializedName("population")
     val population: String,
     @SerializedName("population_proper")
-    val populationProper: String
+    val populationProper: String,
+    val isFavorite: Boolean
 ) {
     override fun toString(): String {
         return city

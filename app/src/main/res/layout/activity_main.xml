@@ -12,7 +12,7 @@
         android:background="@drawable/bg_gradient"
         tools:context=".MainActivity">
 
-        <Spinner
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/spn_city"
             style="@style/SpinnerTheme"
             android:layout_width="match_parent"
@@ -23,12 +23,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:button="@drawable/checkbox"
+            android:buttonTint="@color/yellow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spn_city" />
+
         <TextView
             android:id="@+id/errorText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Error, swipe to refresh"
+            android:layout_marginTop="24dp"
+            android:text="@string/errorText"
             android:textColor="@color/gray_text"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -82,7 +92,7 @@
             android:id="@+id/view"
             android:layout_width="5dp"
             android:layout_height="100dp"
-            android:layout_marginTop="128dp"
+            android:layout_marginTop="100dp"
             android:background="@drawable/bg_border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -125,7 +135,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wind speed"
+                    android:text="@string/wind_speed_text"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
@@ -157,7 +167,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Humidity"
+                    android:text="@string/humidity_text"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
@@ -182,7 +192,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Next 3 days"
+            android:text="@string/next_3_days"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
