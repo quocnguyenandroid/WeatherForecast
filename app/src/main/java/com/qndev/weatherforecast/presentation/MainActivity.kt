@@ -23,9 +23,11 @@ import com.qndev.weatherforecast.domain.DateFormat
 import com.qndev.weatherforecast.domain.getAssetJsonData
 import com.qndev.weatherforecast.domain.toLocalTime
 import com.qndev.weatherforecast.presentation.adapter.NextDayAdapter
+import com.qndev.weatherforecast.presentation.sharepref.CityManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 
@@ -37,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextDayAdapter: NextDayAdapter
     private val viewModel: MainViewModel by viewModels()
 
+    @Inject
+    lateinit var cityManager: CityManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -45,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         setUpSpinner()
         initRecyclerView()
         observeWeatherState()
-        handleSwipeToRefresh()
+        handleEventListener()
     }
 
 
@@ -57,6 +62,15 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, R.layout.spinner_city, cityList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         activityMainBinding.spnCity.adapter = adapter
+    }
+
+    private fun handleEventListener() {
+        activityMainBinding.parent.setOnRefreshListener {
+            viewModel.getCurrentWeather(selectedCity.lat.toDouble(), selectedCity.lng.toDouble())
+        }
+        activityMainBinding.saveCb.setOnClickListener {
+            cityManager.toggleFavorite(selectedCity)
+        }
         activityMainBinding.spnCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -64,15 +78,12 @@ class MainActivity : AppCompatActivity() {
                 val lat = selectedCity.lat.toDouble()
                 val lng = selectedCity.lng.toDouble()
                 viewModel.getCurrentWeather(lat, lng)
+
+                // Check if city is saved or not
+                checkSavedCity()
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-        }
-    }
-
-    private fun handleSwipeToRefresh() {
-        activityMainBinding.parent.setOnRefreshListener {
-            viewModel.getCurrentWeather(selectedCity.lat.toDouble(), selectedCity.lng.toDouble())
         }
     }
 
@@ -134,5 +145,10 @@ class MainActivity : AppCompatActivity() {
         nextDayAdapter = NextDayAdapter()
         activityMainBinding.rcvForecast.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         activityMainBinding.rcvForecast.adapter = nextDayAdapter
+    }
+
+    private fun checkSavedCity() {
+        val savedCity = cityManager.getFavorites()
+        activityMainBinding.saveCb.isChecked = savedCity.contains(selectedCity)
     }
 }

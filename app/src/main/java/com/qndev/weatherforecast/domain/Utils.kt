@@ -1,6 +1,7 @@
 package com.qndev.weatherforecast.domain
 
 import android.content.Context
+import android.content.SharedPreferences
 import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.Charset
@@ -40,3 +41,6 @@ fun getAssetJsonData(context: Context): String? {
     }
     return json
 }
+
+fun Context.sharedPreferences(name: String): SharedPreferences =
+    getSharedPreferences("${name}_shared_preferences", Context.MODE_PRIVATE)
