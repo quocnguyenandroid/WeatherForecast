@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, R.layout.spinner_city, cityList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         activityMainBinding.spnCity.adapter = adapter
+        activityMainBinding.spnCity.setTitle("Search City")
     }
 
     private fun handleEventListener() {
